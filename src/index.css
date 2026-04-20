@@ -1,0 +1,359 @@
+/* F001 - Delicia Quiet Card 设计系统 */
+@import "tailwindcss";
+
+/* ============================================================
+   设计变量
+   ============================================================ */
+:root {
+  /* 品牌色 - 橄榄绿 */
+  --qc-accent: #7C8C3E;
+  --qc-accent-hover: #6A7A32;
+  --qc-accent-light: #7C8C3E12;
+
+  /* 背景层次 */
+  --qc-canvas: #FDFCFA;
+  --qc-sidebar: #F7F5F2;
+  --qc-elevated: #FFFFFF;
+  --qc-hover: #F5F3F0;
+
+  /* 文字 */
+  --qc-text-primary: #37352F;
+  --qc-text-secondary: #6B6B6B;
+  --qc-text-tertiary: #9B9B9B;
+
+  /* 边框 */
+  --qc-border-light: #E8E6E1;
+  --qc-border-medium: #C9C6BF;
+
+  /* 阴影 */
+  --qc-shadow-subtle: 0 1px 3px rgba(55, 53, 47, 0.08);
+  --qc-shadow-medium: 0 4px 12px rgba(55, 53, 47, 0.1), 0 1px 3px rgba(55, 53, 47, 0.06);
+  --qc-shadow-large: 0 20px 60px rgba(55, 53, 47, 0.14), 0 4px 16px rgba(55, 53, 47, 0.08);
+}
+
+/* ============================================================
+   Tailwind 自定义颜色映射
+   ============================================================ */
+@theme inline {
+  /* 品牌色 */
+  --color-qc-accent: var(--qc-accent);
+  --color-qc-accent-hover: var(--qc-accent-hover);
+  --color-qc-accent-light: var(--qc-accent-light);
+
+  /* 背景 */
+  --color-qc-canvas: var(--qc-canvas);
+  --color-qc-sidebar: var(--qc-sidebar);
+  --color-qc-elevated: var(--qc-elevated);
+  --color-qc-hover: var(--qc-hover);
+
+  /* 文字 */
+  --color-qc-text-primary: var(--qc-text-primary);
+  --color-qc-text-secondary: var(--qc-text-secondary);
+  --color-qc-text-tertiary: var(--qc-text-tertiary);
+
+  /* 边框 */
+  --color-qc-border-light: var(--qc-border-light);
+  --color-qc-border-medium: var(--qc-border-medium);
+
+  /* 阴影 */
+  --shadow-qc-subtle: var(--qc-shadow-subtle);
+  --shadow-qc-medium: var(--qc-shadow-medium);
+  --shadow-qc-large: var(--qc-shadow-large);
+
+  /* 字体族 */
+  --font-serif-cn: 'Noto Serif SC', 'Georgia', serif;
+  --font-sans-cn: 'Noto Sans SC', 'Arial', sans-serif;
+  --font-magazine: 'Playfair Display', 'Georgia', serif;
+  --font-modern: 'Inter', 'Arial', sans-serif;
+  --font-handwriting: 'Dancing Script', 'cursive';
+}
+
+/* ============================================================
+   基础全局样式
+   ============================================================ */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--qc-canvas);
+    color: var(--qc-text-primary);
+    font-family: 'Inter', 'Noto Sans SC', sans-serif;
+    line-height: 1.6;
+    overflow: hidden;
+  }
+
+  #root {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+  }
+}
+
+/* ============================================================
+   组件：Notion 风格输入框
+   ============================================================ */
+@layer components {
+  .notion-input {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1.5px solid var(--qc-border-light);
+    background-color: var(--qc-elevated);
+    color: var(--qc-text-primary);
+    font-size: 13px;
+    line-height: 1.6;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    outline: none;
+    font-family: inherit;
+  }
+
+  .notion-input::placeholder {
+    color: var(--qc-text-tertiary);
+  }
+
+  .notion-input:hover {
+    border-color: var(--qc-border-medium);
+  }
+
+  .notion-input:focus {
+    border-color: var(--qc-accent);
+    box-shadow: 0 0 0 3px var(--qc-accent-light);
+  }
+
+  textarea.notion-input {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  /* 移除按钮 */
+  .remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: var(--qc-text-tertiary);
+    opacity: 0;
+    transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .group:hover .remove-btn,
+  .remove-btn:focus {
+    opacity: 1;
+  }
+
+  .remove-btn:hover {
+    background-color: #FEECEA;
+    color: #C0392B;
+  }
+
+  /* 工具栏按钮 */
+  .toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    color: var(--qc-text-secondary);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.12s ease, color 0.12s ease;
+    padding: 0 6px;
+  }
+
+  .toolbar-btn:hover:not(:disabled) {
+    background-color: var(--qc-hover);
+    color: var(--qc-text-primary);
+  }
+
+  .toolbar-btn:active:not(:disabled) {
+    background-color: var(--qc-border-light);
+  }
+
+  .toolbar-divider {
+    width: 1px;
+    height: 16px;
+    background-color: var(--qc-border-light);
+    margin: 0 4px;
+    flex-shrink: 0;
+  }
+}
+
+/* ============================================================
+   卡片内容排版样式（期刊感）
+   ============================================================ */
+@layer components {
+  .qc-card-content {
+    font-family: 'Noto Serif SC', 'Georgia', serif;
+    color: #37352F;
+    overflow: hidden;
+  }
+
+  .qc-card-content-editorial {
+    font-family: 'Noto Serif SC', 'Georgia', serif;
+    color: #37352F;
+    overflow: hidden;
+  }
+
+  .qc-card-content-soft {
+    font-family: 'Noto Serif SC', 'Georgia', serif;
+    color: #37352F;
+    overflow: hidden;
+  }
+
+  /* 字体大小变体 */
+  .qc-card-content.size-small .qc-h1,
+  .qc-card-content-editorial.size-small .qc-h1,
+  .qc-card-content-soft.size-small .qc-h1 {
+    font-size: 16px;
+  }
+
+  .qc-card-content.size-small .qc-h2,
+  .qc-card-content-editorial.size-small .qc-h2,
+  .qc-card-content-soft.size-small .qc-h2 {
+    font-size: 13px;
+  }
+
+  .qc-card-content.size-small .qc-p,
+  .qc-card-content-editorial.size-small .qc-p,
+  .qc-card-content-soft.size-small .qc-p {
+    font-size: 11px;
+  }
+
+  .qc-card-content.size-large .qc-h1,
+  .qc-card-content-editorial.size-large .qc-h1,
+  .qc-card-content-soft.size-large .qc-h1 {
+    font-size: 20px;
+  }
+
+  .qc-card-content.size-large .qc-h2,
+  .qc-card-content-editorial.size-large .qc-h2,
+  .qc-card-content-soft.size-large .qc-h2 {
+    font-size: 17px;
+  }
+
+  .qc-card-content.size-large .qc-p,
+  .qc-card-content-editorial.size-large .qc-p,
+  .qc-card-content-soft.size-large .qc-p {
+    font-size: 15px;
+  }
+
+  .qc-h1 {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: #1F1E1A;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid rgba(124, 140, 62, 0.25);
+  }
+
+  .qc-h1:first-child {
+    margin-top: 0;
+  }
+
+  .qc-h2 {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: 0em;
+    color: #37352F;
+    margin-top: 16px;
+    margin-bottom: 6px;
+  }
+
+  .qc-h2:first-child {
+    margin-top: 0;
+  }
+
+  .qc-p {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.85;
+    letter-spacing: 0.025em;
+    color: #4A4845;
+    margin-top: 0;
+    margin-bottom: 8px;
+    text-align: justify;
+  }
+
+  .qc-p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* 字体辅助类 */
+  .font-serif-cn {
+    font-family: 'Noto Serif SC', 'Georgia', serif;
+  }
+
+  .font-sans-cn {
+    font-family: 'Noto Sans SC', 'Arial', sans-serif;
+  }
+
+  .font-magazine {
+    font-family: 'Playfair Display', 'Georgia', serif;
+  }
+
+  .font-modern {
+    font-family: 'Inter', 'Arial', sans-serif;
+  }
+
+  .font-handwriting {
+    font-family: 'Dancing Script', cursive;
+  }
+}
+
+/* ============================================================
+   滚动条美化
+   ============================================================ */
+@layer utilities {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--qc-border-light);
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--qc-border-medium);
+  }
+}
+
+/* ============================================================
+   F039 - 页面过渡动效
+   ============================================================ */
+@layer utilities {
+  .qc-fade-in {
+    animation: qcFadeIn 0.25s ease-out;
+  }
+
+  @keyframes qcFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
